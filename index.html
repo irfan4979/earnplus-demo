@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EarnPlus Demo</title>
+  <title>EarnPlus Demo - Deposit Logic</title>
   <style>
-    body{font-family:sans-serif;max-width:420px;margin:40px auto;padding:20px}
-    input,button{width:100%;padding:10px;margin:6px 0;box-sizing:border-box}
-    button{background:#2e86de;color:white;border:none;font-size:16px}
-    .hidden{display:none}
+    body { font-family: sans-serif; max-width: 420px; margin: 40px auto; padding: 20px; }
+    input, button { width: 100%; padding: 10px; margin: 6px 0; box-sizing: border-box; }
+    button { background: #2e86de; color: white; border: none; font-size: 16px; cursor: pointer; }
+    .hidden { display: none; }
+    .note { font-size: 14px; color: #777; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -18,24 +19,47 @@
   <label>Referral Code (optional)</label><input id="refCode" />
   <button onclick="signUp()">Sign Up</button>
 </div>
+
+<div id="deposit" class="hidden">
+  <h3>Deposit Required</h3>
+  <p>Minimum deposit ৳200 is required to activate your account.</p>
+  <button onclick="makeDeposit()">Make Deposit</button>
+</div>
+
 <div id="dashboard" class="hidden">
   <p>Welcome, <span id="user"></span>!</p>
-  <p>Points: <span id="points">10</span></p>
+  <p>Points: <span id="points">0</span></p>
   <p>Referral Bonus: <span id="bonus">0</span></p>
+  <p class="note">Withdraw only available after deposit.</p>
 </div>
+
 <script>
-  const user = {name:'', points:10, bonus:0}
-  function signUp(){
-    const name = document.getElementById('name').value.trim()
-    const ref = document.getElementById('refCode').value.trim()
-    if(!name) return alert("Enter your name")
-    user.name = name
-    if(ref) { user.bonus = 50; user.points += 50 }
-    document.getElementById('signup').classList.add('hidden')
-    document.getElementById('dashboard').classList.remove('hidden')
-    document.getElementById('user').textContent = name
-    document.getElementById('points').textContent = user.points
-    document.getElementById('bonus').textContent = user.bonus
+  const user = { name: '', points: 0, bonus: 0, deposited: false };
+
+  function signUp() {
+    const name = document.getElementById('name').value.trim();
+    const ref = document.getElementById('refCode').value.trim();
+    if (!name) return alert("Enter your name");
+
+    user.name = name;
+    user.ref = ref;
+    document.getElementById('signup').classList.add('hidden');
+    document.getElementById('deposit').classList.remove('hidden');
+  }
+
+  function makeDeposit() {
+    user.deposited = true;
+    user.points = 10;
+    if (user.ref) {
+      user.bonus = 50;
+      user.points += 50;
+    }
+
+    document.getElementById('deposit').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('user').textContent = user.name;
+    document.getElementById('points').textContent = user.points;
+    document.getElementById('bonus').textContent = user.bonus;
   }
 </script>
 </body>
